@@ -189,11 +189,17 @@ public class DraggableRulerView extends View {
         return true;
     }
 
-
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         centerX = w / 2; // Calcoliamo la posizione centrale della vista
     }
 
+    // Metodo pubblico per ottenere il valore selezionato
+    public String getSelectedValue() {
+        int index = Math.round(offsetX / step);
+        return customValues != null && index < customValues.size()
+                ? customValues.get(index)
+                : String.valueOf(index);
+    }
 }

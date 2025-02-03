@@ -2,6 +2,8 @@ package org.dd.rulebar;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.dd.rulebar.draggableruler.DraggableRulerView;
@@ -19,13 +21,13 @@ public class MainActivity extends AppCompatActivity {
         DraggableRulerView draggableRulerView = findViewById(R.id.draggableRulerView);
 
         // Imposta valori personalizzati
-        List<String> values = Arrays.asList("10", "20", "30", "40", "50", "60");
+        List<String> values = Arrays.asList("1/25", "1/50", "1/100", "1", "30", "60");
         draggableRulerView.setCustomValues(values);
-        //draggableRulerView.setDefaultValue("10");
 
-        // Aggiungi un listener per ottenere la posizione del righello
-        draggableRulerView.setOnRulerPositionChangeListener(selectedValue -> {
-            Log.d("Ruler", "Valore selezionato: " + selectedValue);
+        // Aggiungi un listener per ottenere la posizione del righello e visualizzare un Toast
+        draggableRulerView.setOnRulerPositionChangeListener(sv -> {
+            Log.d("Ruler", "Valore selezionato: " + sv);
+            Toast.makeText(this, "Valore selezionato: " + sv, Toast.LENGTH_SHORT).show();
         });
     }
 }
