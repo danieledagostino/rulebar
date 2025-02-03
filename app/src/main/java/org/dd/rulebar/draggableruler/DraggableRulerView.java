@@ -25,7 +25,8 @@ public class DraggableRulerView extends View {
     private int maxValue = 5000;  // Valore massimo del righello
     private int step = 50;        // Incremento per i valori (lunghezza tra tacche lunghe)
     private int centerX;          // Posizione centrale dello schermo
-
+    private int smallTickInterval = 5; // Imposta il numero di tacche corte tra i valori
+    private float tickSpacing = 2.0f; // Imposta la distanza tra le tacche principali (valore di default)
 
     public void setSelectedValueColor(int color) {
         this.selectedValueColor = color;
@@ -45,6 +46,15 @@ public class DraggableRulerView extends View {
         invalidate(); // Ridisegna la View
     }
 
+    public void setTickSpacing(float spacing) {
+        this.tickSpacing = spacing;
+        invalidate(); // Ridisegna la View
+    }
+
+    public void setSmallTickInterval(int interval) {
+        this.smallTickInterval = interval;
+        invalidate(); // Ridisegna la View
+    }
 
     // Interfaccia per il listener
     public interface OnRulerPositionChangeListener {
@@ -90,12 +100,14 @@ public class DraggableRulerView extends View {
         // Disegna la linea centrale del righello
         canvas.drawLine(0, centerY, getWidth(), centerY, paint);
 
-        // Disegna tacche
+        // Disegna tacche lunghe (a ogni 'step')
         for (int i = minValue; i <= maxValue; i += step) {
-            float x = centerX + ((i - offsetX)); // Posizione relativa delle tacche
+            float x = centerX + ((i - offsetX) * tickSpacing); // Posizione relativa delle tacche, moltiplicata per tickSpacing
 
             if (x >= 0 && x <= getWidth()) { // Disegna solo tacche visibili
-                if ((i / step) % 5 == 0) { // Tacca lunga
+                // Tacche lunghe
+                if ((i - minValue) % step == 0) {
+                    // Disegna tacca lunga
                     canvas.drawLine(x, centerY - 30, x, centerY + 30, paint);
 
                     // Colore del valore selezionato
@@ -106,13 +118,21 @@ public class DraggableRulerView extends View {
                     }
 
                     // Disegna il valore (gestione delle stringhe)
-                    String valueText = customValues != null && (i / step) < customValues.size()
-                            ? customValues.get(i / step)
+                    String valueText = customValues != null && (i - minValue) / step < customValues.size()
+                            ? customValues.get((i - minValue) / step) // Indice corretto per customValues
                             : String.valueOf(i / step);
                     canvas.drawText(valueText, x - paint.measureText(valueText) / 2, centerY + 60, paint);
-                } else { // Tacche corte
-                    canvas.drawLine(x, centerY - 10, x, centerY + 10, paint);
                 }
+            }
+        }
+
+        // Disegna tacche corte tra i valori principali
+        for (int i = minValue + step; i < maxValue; i += step / smallTickInterval) {
+            float x = centerX + ((i - offsetX) * tickSpacing); // Posizione delle tacche corte
+
+            if (x >= 0 && x <= getWidth()) {
+                // Disegna solo tacche corte (senza valori associati)
+                canvas.drawLine(x, centerY - 10, x, centerY + 10, paint);
             }
         }
 

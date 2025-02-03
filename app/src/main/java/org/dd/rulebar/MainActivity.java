@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
         // Imposta valori personalizzati
         List<String> values = Arrays.asList("10", "20", "30", "40", "50", "60");
         draggableRulerView.setCustomValues(values);
+        //draggableRulerView.setDefaultValue("10");
 
         // Aggiungi un listener per ottenere la posizione del righello
         draggableRulerView.setOnRulerPositionChangeListener(selectedValue -> {
